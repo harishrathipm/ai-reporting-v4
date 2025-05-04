@@ -1,24 +1,27 @@
+import pytest
 from app.services.query_processor import QueryProcessorService
 from app.models.query import QueryRequest
 
 
-def test_query_processor_init():
+@pytest.mark.asyncio
+async def test_query_processor_init():
     """Test that QueryProcessorService initializes correctly."""
     processor = QueryProcessorService()
     assert processor.conversations == {}
 
 
-def test_process_query():
+@pytest.mark.asyncio
+async def test_process_query():
     """Test basic query processing functionality."""
     processor = QueryProcessorService()
 
     # Process a simple query
     request = QueryRequest(query="What is the total revenue?")
-    response = processor.process_query(request)
+    response = await processor.process_query(request)
 
     # Verify response
     assert response.query == "What is the total revenue?"
-    assert "I've processed your query" in response.result
+    assert response.result is not None and response.result != ""
     assert response.status == "success"
     assert response.conversation_id is not None
 
@@ -35,20 +38,21 @@ def test_process_query():
     assert messages[1].content == response.result
 
 
-def test_conversation_continuity():
+@pytest.mark.asyncio
+async def test_conversation_continuity():
     """Test that conversations maintain state across multiple queries."""
     processor = QueryProcessorService()
 
     # First query creates conversation
     request1 = QueryRequest(query="What is the total revenue?")
-    response1 = processor.process_query(request1)
+    response1 = await processor.process_query(request1)
     conversation_id = response1.conversation_id
 
     # Second query continues conversation
     request2 = QueryRequest(
         query="Break it down by quarter", conversation_id=conversation_id
     )
-    response2 = processor.process_query(request2)
+    response2 = await processor.process_query(request2)
 
     # Verify conversation continued
     assert response2.conversation_id == conversation_id
@@ -64,13 +68,14 @@ def test_conversation_continuity():
     assert messages[3].content == response2.result
 
 
-def test_get_conversation():
+@pytest.mark.asyncio
+async def test_get_conversation():
     """Test retrieving a conversation by ID."""
     processor = QueryProcessorService()
 
     # Create conversation via query
     request = QueryRequest(query="What is the total revenue?")
-    response = processor.process_query(request)
+    response = await processor.process_query(request)
     conversation_id = response.conversation_id
 
     # Retrieve conversation

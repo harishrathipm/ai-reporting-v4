@@ -12,7 +12,8 @@ python-dotenv>=1.0.0
 tavily-python
 loguru  # Advanced logging library
 mypy    # Static type checking
-flake8  # Linting
-black   # Formatting
-autoflake  # Auto-fix for imports and unused variables
-isort   # Import sorting
+ruff    # All-in-one Python linter and formatter
+tomli>=2.0.0  # For TOML configuration parsing (Python < 3.11)
+pytest  # Testing framework
+pytest-cov  # Coverage reports
+pytest-asyncio  # Support for testing async code

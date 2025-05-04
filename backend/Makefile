@@ -5,7 +5,7 @@
 VENV = .venv
 ACTIVATE = $(VENV)\Scripts\activate
 
-.PHONY: setup install dev start test lint lint-fix format check fix clean requirements typecheck help
+.PHONY: setup install dev start test test-cov lint fix check typecheck requirements clean help
 
 # Default target
 help:
@@ -15,11 +15,10 @@ help:
 	@echo "  make dev          - Run development server with auto-reload"
 	@echo "  make start        - Run production server"
 	@echo "  make test         - Run tests"
-	@echo "  make lint         - Run linter"
-	@echo "  make lint-fix     - Run linter with auto-fix"
-	@echo "  make format       - Format code with Black"
-	@echo "  make check        - Run code quality checks (lint, format, typecheck)"
-	@echo "  make fix          - Run code quality checks with auto-fix"
+	@echo "  make test-cov     - Run tests with coverage report"
+	@echo "  make lint         - Run linter (ruff) to check for issues"
+	@echo "  make fix          - Auto-fix code issues with ruff"
+	@echo "  make check        - Run all code quality checks (ruff + mypy)"
 	@echo "  make typecheck    - Run mypy static type checking"
 	@echo "  make requirements - Generate requirements.txt from installed packages"
 	@echo "  make clean        - Remove virtual environment and artifacts"
@@ -43,42 +42,40 @@ start:
 
 # Run tests
 test:
-	$(ACTIVATE) && pytest
+	$(ACTIVATE) && python -m pytest
 
-# Run linter
+# Run tests with coverage report
+test-cov:
+	if not exist coverage mkdir coverage
+	$(ACTIVATE) && python -m pytest --cov=app --cov-report=term --cov-report=html:coverage/html --cov-report=xml:coverage/coverage.xml
+
+# Run linter (ruff check using config from pyproject.toml)
 lint:
-	$(ACTIVATE) && flake8 app
+	$(ACTIVATE) && ruff check app
 
-# Run linter with auto-fix
-lint-fix:
-	$(ACTIVATE) && autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place app
+# Auto-fix code issues (using config from pyproject.toml)
+fix:
+	$(ACTIVATE) && ruff check --fix app
+	$(ACTIVATE) && ruff format app
 
-# Format code
-format:
-	$(ACTIVATE) && black app
+# Run all code quality checks
+check:
+	$(ACTIVATE) && ruff check app
+	$(ACTIVATE) && ruff format --check app
+	$(ACTIVATE) && mypy app
 
-# Run static type checking
+# Run static type checking (using config from pyproject.toml)
 typecheck:
 	$(ACTIVATE) && mypy app
-
-# Run code quality checks (lint, format, typecheck)
-check:
-	$(ACTIVATE) && flake8 app
-	$(ACTIVATE) && black --check app
-	$(ACTIVATE) && mypy app
-
-# Run code quality checks with auto-fix
-fix:
-	$(ACTIVATE) && autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place app
-	$(ACTIVATE) && black app
-	$(ACTIVATE) && mypy app --no-error-summary || echo "Type issues remain after auto-fixes. Please address them manually."
 
 # Generate requirements.txt
 requirements:
 	$(ACTIVATE) && pip freeze > requirements.txt
 
-# Clean up
+# Clean up (Windows compatible)
 clean:
-	rmdir /s /q $(VENV) 2>nul || true
 	for /d /r . %%d in (__pycache__) do @if exist "%%d" rd /s /q "%%d"
-	del /s *.pyc 2>nul || true
+	if exist .coverage del .coverage
+	if exist coverage rmdir /s /q coverage
+	if exist htmlcov rmdir /s /q htmlcov
+	del /s *.pyc 2>nul

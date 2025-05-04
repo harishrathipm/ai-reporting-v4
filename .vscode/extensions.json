@@ -1,0 +1,22 @@
+{
+  "recommendations": [
+    // Python extensions
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "charliermarsh.ruff",
+    "matangover.mypy",
+
+    // JavaScript/React extensions
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "styled-components.vscode-styled-components",
+    "dsznajder.es7-react-js-snippets",
+
+    // General extensions
+    "streetsidesoftware.code-spell-checker",
+    "eamodio.gitlens",
+    "gruntfuggly.todo-tree",
+    "ms-azuretools.vscode-docker",
+    "editorconfig.editorconfig"
+  ]
+}

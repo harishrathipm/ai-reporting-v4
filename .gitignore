@@ -9,3 +9,19 @@
 
 #ignore logs
 logs/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.coverage
+.mypy_cache/
+
+# Test coverage
+htmlcov/
+coverage/
+.coverage.*
+coverage.*

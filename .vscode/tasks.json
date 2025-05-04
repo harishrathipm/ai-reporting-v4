@@ -1,0 +1,171 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // Backend tasks
+    {
+      "label": "Backend: Start Development Server",
+      "type": "shell",
+      "command": "${workspaceFolder}/backend/.venv/Scripts/activate && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Backend: Run Tests",
+      "type": "shell",
+      "command": "${workspaceFolder}/backend/.venv/Scripts/activate && python -m pytest",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Backend: Run Tests with Coverage",
+      "type": "shell",
+      "command": "${workspaceFolder}/backend/.venv/Scripts/activate && python -m pytest --cov=app --cov-report=term --cov-report=html:coverage/html --cov-report=xml:coverage/coverage.xml",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Backend: Lint with Ruff",
+      "type": "shell",
+      "command": "${workspaceFolder}/backend/.venv/Scripts/activate && ruff check app",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend: Format with Ruff",
+      "type": "shell",
+      "command": "${workspaceFolder}/backend/.venv/Scripts/activate && ruff format app",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend: Type Check with MyPy",
+      "type": "shell",
+      "command": "${workspaceFolder}/backend/.venv/Scripts/activate && mypy app",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+
+    // Frontend tasks
+    {
+      "label": "Frontend: Start Development Server",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Frontend: Build for Production",
+      "type": "shell",
+      "command": "npm run build",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend: Run Tests",
+      "type": "shell",
+      "command": "npm test",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "Frontend: Lint with ESLint",
+      "type": "shell",
+      "command": "npm run lint",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Frontend: Format with Prettier",
+      "type": "shell",
+      "command": "npm run format",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+
+    // Full-stack tasks
+    {
+      "label": "Full Stack: Start All",
+      "dependsOn": [
+        "Backend: Start Development Server",
+        "Frontend: Start Development Server"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Full Stack: Run All Tests",
+      "dependsOn": [
+        "Backend: Run Tests",
+        "Frontend: Run Tests"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
