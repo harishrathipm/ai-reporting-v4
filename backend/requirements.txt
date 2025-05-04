@@ -1,6 +1,18 @@
 fastapi
 uvicorn
-pydantic
+pydantic>=2.0.0
 pymongo
+sqlalchemy
+psycopg2-binary  # For PostgreSQL connections
 langchain
-python-dotenv
+langgraph
+langchain_openai
+langchain_community
+python-dotenv>=1.0.0
+tavily-python
+loguru  # Advanced logging library
+mypy    # Static type checking
+flake8  # Linting
+black   # Formatting
+autoflake  # Auto-fix for imports and unused variables
+isort   # Import sorting

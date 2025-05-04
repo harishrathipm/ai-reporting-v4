@@ -1,14 +1,13 @@
 import axios, { AxiosInstance } from 'axios';
-import configService from './config.service';
+import config from '../config';
 
 class ApiService {
   private api: AxiosInstance;
   
   constructor() {
-    const { baseURL } = configService.getApiConfig(configService.getEnvironment());
-    
     this.api = axios.create({
-      baseURL,
+      baseURL: config.api.baseURL,
+      timeout: config.api.timeout,
       headers: {
         'Content-Type': 'application/json',
       },

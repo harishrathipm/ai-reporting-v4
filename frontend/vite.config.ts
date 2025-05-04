@@ -13,10 +13,12 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    open: true,
+    host: '0.0.0.0', // Bind to all network interfaces
+    strictPort: true, // Fail if port is already in use
+    open: false, // Don't try to open browser automatically
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'http://backend:8000',
         changeOrigin: true,
         secure: false,
       },

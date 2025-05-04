@@ -5,7 +5,7 @@
 VENV = .venv
 ACTIVATE = $(VENV)\Scripts\activate
 
-.PHONY: setup install dev start test lint format clean requirements help
+.PHONY: setup install dev start test lint lint-fix format check fix clean requirements typecheck help
 
 # Default target
 help:
@@ -16,7 +16,11 @@ help:
 	@echo "  make start        - Run production server"
 	@echo "  make test         - Run tests"
 	@echo "  make lint         - Run linter"
+	@echo "  make lint-fix     - Run linter with auto-fix"
 	@echo "  make format       - Format code with Black"
+	@echo "  make check        - Run code quality checks (lint, format, typecheck)"
+	@echo "  make fix          - Run code quality checks with auto-fix"
+	@echo "  make typecheck    - Run mypy static type checking"
 	@echo "  make requirements - Generate requirements.txt from installed packages"
 	@echo "  make clean        - Remove virtual environment and artifacts"
 
@@ -45,9 +49,29 @@ test:
 lint:
 	$(ACTIVATE) && flake8 app
 
+# Run linter with auto-fix
+lint-fix:
+	$(ACTIVATE) && autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place app
+
 # Format code
 format:
 	$(ACTIVATE) && black app
+
+# Run static type checking
+typecheck:
+	$(ACTIVATE) && mypy app
+
+# Run code quality checks (lint, format, typecheck)
+check:
+	$(ACTIVATE) && flake8 app
+	$(ACTIVATE) && black --check app
+	$(ACTIVATE) && mypy app
+
+# Run code quality checks with auto-fix
+fix:
+	$(ACTIVATE) && autoflake --recursive --remove-all-unused-imports --remove-unused-variables --in-place app
+	$(ACTIVATE) && black app
+	$(ACTIVATE) && mypy app --no-error-summary || echo "Type issues remain after auto-fixes. Please address them manually."
 
 # Generate requirements.txt
 requirements:

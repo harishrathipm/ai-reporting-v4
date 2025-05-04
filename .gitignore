@@ -1,0 +1,11 @@
+# Git will ignore these files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Keep example files
+!.env.example
+
+#ignore logs
+logs/

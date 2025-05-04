@@ -1,10 +1,7 @@
 /// <reference types="vite/client" />
 
-interface ImportMetaEnv {
-  readonly VITE_API_URL: string;
-  // Add other environment variables as needed
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
+// Type declaration for JSON imports (needed for env.json)
+declare module "*.json" {
+  const value: any;
+  export default value;
 }
