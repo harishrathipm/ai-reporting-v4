@@ -62,13 +62,12 @@ The implementation follows these guiding principles:
 **Tasks**:
 - Implement MongoDB connector using pymongo
 - Implement SQL connector using SQLAlchemy
-- Implement CSV/file connector
 - Create tests for each connector type
 
 **Component Implementation**:
 - **Backend**: Create connectors in backend/app/tools/connectors/
 - **Frontend**: No changes
-- **Agentic**: Not applicable for this phase
+- **Agentic**: Connectors should be implemented as langgraph tools
 
 **Infrastructure & Configuration Updates**:
 - Add MongoDB and SQL database services to Docker Compose

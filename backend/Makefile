@@ -5,7 +5,7 @@
 VENV = .venv
 ACTIVATE = $(VENV)\Scripts\activate
 
-.PHONY: setup install dev start test test-cov lint fix check typecheck requirements clean help
+.PHONY: setup install dev start test test-cov compile requirements clean help
 
 # Default target
 help:
@@ -14,12 +14,9 @@ help:
 	@echo "  make install      - Install dependencies only"
 	@echo "  make dev          - Run development server with auto-reload"
 	@echo "  make start        - Run production server"
+	@echo "  make compile      - Compile Python files to .pyc bytecode"
 	@echo "  make test         - Run tests"
 	@echo "  make test-cov     - Run tests with coverage report"
-	@echo "  make lint         - Run linter (ruff) to check for issues"
-	@echo "  make fix          - Auto-fix code issues with ruff"
-	@echo "  make check        - Run all code quality checks (ruff + mypy)"
-	@echo "  make typecheck    - Run mypy static type checking"
 	@echo "  make requirements - Generate requirements.txt from installed packages"
 	@echo "  make clean        - Remove virtual environment and artifacts"
 
@@ -40,33 +37,18 @@ dev:
 start:
 	$(ACTIVATE) && uvicorn app.main:app --host 0.0.0.0 --port 8000
 
-# Run tests
-test:
+# Compile Python files to bytecode
+compile:
+	$(ACTIVATE) && python -m compileall app
+
+# Run tests (includes compilation first)
+test: compile
 	$(ACTIVATE) && python -m pytest
 
-# Run tests with coverage report
-test-cov:
+# Run tests with coverage report (includes compilation first)
+test-cov: compile
 	if not exist coverage mkdir coverage
 	$(ACTIVATE) && python -m pytest --cov=app --cov-report=term --cov-report=html:coverage/html --cov-report=xml:coverage/coverage.xml
-
-# Run linter (ruff check using config from pyproject.toml)
-lint:
-	$(ACTIVATE) && ruff check app
-
-# Auto-fix code issues (using config from pyproject.toml)
-fix:
-	$(ACTIVATE) && ruff check --fix app
-	$(ACTIVATE) && ruff format app
-
-# Run all code quality checks
-check:
-	$(ACTIVATE) && ruff check app
-	$(ACTIVATE) && ruff format --check app
-	$(ACTIVATE) && mypy app
-
-# Run static type checking (using config from pyproject.toml)
-typecheck:
-	$(ACTIVATE) && mypy app
 
 # Generate requirements.txt
 requirements:

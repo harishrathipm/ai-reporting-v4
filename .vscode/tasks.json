@@ -42,45 +42,6 @@
         "panel": "dedicated"
       }
     },
-    {
-      "label": "Backend: Lint with Ruff",
-      "type": "shell",
-      "command": "${workspaceFolder}/backend/.venv/Scripts/activate && ruff check app",
-      "options": {
-        "cwd": "${workspaceFolder}/backend"
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Backend: Format with Ruff",
-      "type": "shell",
-      "command": "${workspaceFolder}/backend/.venv/Scripts/activate && ruff format app",
-      "options": {
-        "cwd": "${workspaceFolder}/backend"
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      },
-      "problemMatcher": []
-    },
-    {
-      "label": "Backend: Type Check with MyPy",
-      "type": "shell",
-      "command": "${workspaceFolder}/backend/.venv/Scripts/activate && mypy app",
-      "options": {
-        "cwd": "${workspaceFolder}/backend"
-      },
-      "presentation": {
-        "reveal": "always",
-        "panel": "dedicated"
-      },
-      "problemMatcher": []
-    },
 
     // Frontend tasks
     {

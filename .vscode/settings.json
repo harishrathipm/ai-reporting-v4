@@ -5,8 +5,8 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit"
   },
-  "editor.tabSize": 2,
-  "editor.rulers": [100],
+  "editor.tabSize": 4,
+  "editor.rulers": [120],
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
   "search.exclude": {
@@ -17,36 +17,14 @@
     "**/__pycache__": true
   },
 
-  // Terminal settings
-  "terminal.integrated.defaultProfile.windows": "PowerShell",
-  "terminal.integrated.cwd": "${workspaceFolder}",
-
-  // Python settings (backend)
-  "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff",
-    "editor.formatOnSave": true,
-    "editor.tabSize": 4,
-    "editor.rulers": [100]
-  },
-  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.typeCheckingMode": "standard",
   "python.analysis.extraPaths": ["${workspaceFolder}/backend"],
   "python.testing.pytestEnabled": true,
   "python.testing.unittestEnabled": false,
-  "python.testing.nosetestsEnabled": false,
   "python.testing.pytestArgs": [
     "backend/app/tests"
   ],
   "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/Scripts/python.exe",
-  "python.linting.enabled": true,
-  "python.linting.mypyEnabled": true,
-
-  // Ruff settings
-  "ruff.path": ["${workspaceFolder}/backend/.venv/Scripts/ruff.exe"],
-  "ruff.interpreter": ["${workspaceFolder}/backend/.venv/Scripts/python.exe"],
-  "ruff.organizeImports": true,
-  "ruff.fixAll": true,
-  "ruff.lint.run": "onSave",
-
   // JavaScript/TypeScript settings (frontend)
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -63,32 +41,7 @@
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "typescript.tsdk": "${workspaceFolder}/frontend/node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.importModuleSpecifier": "relative",
   "javascript.updateImportsOnFileMove.enabled": "always",
-  "typescript.updateImportsOnFileMove.enabled": "always",
-
-  // ESLint settings
-  "eslint.workingDirectories": [
-    "./frontend"
-  ],
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact"
-  ],
-  "eslint.format.enable": true,
-
-  // File associations
-  "files.associations": {
-    "*.py": "python",
-    "*.toml": "toml",
-    "requirements*.txt": "pip-requirements",
-    "*.ts": "typescript",
-    "*.tsx": "typescriptreact",
-    "*.js": "javascript",
-    "*.jsx": "javascriptreact"
-  }
+  "typescript.updateImportsOnFileMove.enabled": "always"
 }

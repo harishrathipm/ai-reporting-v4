@@ -18,7 +18,6 @@ __pycache__/
 .Python
 .pytest_cache/
 .coverage
-.mypy_cache/
 
 # Test coverage
 htmlcov/

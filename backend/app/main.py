@@ -1,16 +1,31 @@
+import time
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import query
+
 from app.utils.logging_utils import get_logger
-import time
 
 # Get module-specific logger
 logger = get_logger(__name__)
 
+
+# Define lifespan context manager (new approach)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup logic
+    logger.info("Application startup complete")
+    yield
+    # Shutdown logic
+    logger.info("Application shutdown complete")
+
+
+# Create FastAPI app with lifespan handler
 app = FastAPI(
     title="Dynamic Reporting AI",
     description="AI-powered Virtual Data Analyst",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 # Add CORS middleware
@@ -42,10 +57,6 @@ async def log_requests(request: Request, call_next):
     return response
 
 
-# Include routers
-app.include_router(query.router)
-
-
 @app.get("/")
 async def root():
     logger.info("Root endpoint called")
@@ -56,15 +67,3 @@ async def root():
 async def health_check():
     logger.info("Health check endpoint called")
     return {"status": "healthy"}
-
-
-# Log application startup
-@app.on_event("startup")
-async def startup_event():
-    logger.info("Application startup complete")
-
-
-# Log application shutdown
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("Application shutdown complete")

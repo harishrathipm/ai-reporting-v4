@@ -48,7 +48,16 @@
     "import/order": [
       "error",
       {
-        "groups": ["builtin", "external", "internal", ["parent", "sibling"], "index"],
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          [
+            "parent",
+            "sibling"
+          ],
+          "index"
+        ],
         "newlines-between": "always",
         "alphabetize": {
           "order": "asc",
@@ -56,5 +65,21 @@
         }
       }
     ]
-  }
+  },
+  // Added from settings.json
+  "ignorePatterns": [
+    "node_modules",
+    "dist",
+    "coverage"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.js",
+        "*.jsx",
+        "*.ts",
+        "*.tsx"
+      ]
+    }
+  ]
 }

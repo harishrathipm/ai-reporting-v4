@@ -1,0 +1,17 @@
+repos:
+  - repo: local
+    hooks:
+      - id: compile-python
+        name: Compile Python files
+        entry: python -m compileall app
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: backend-tests
+        name: Run backend tests
+        entry: python -m pytest -v
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [push]
