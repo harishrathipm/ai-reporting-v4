@@ -1,5 +1,5 @@
 
-# 🧠 Dynamic Reporting AI — Full Architecture (Original Version)
+# 🧠 Dynamic Reporting AI
 
 ## Overview
 This document outlines the **original, full-scale architecture** of the Dynamic Reporting AI system before simplifying it for a demo version. It is designed as a modular, extensible, and production-ready platform that acts as an AI-powered **Virtual Data Analyst**.
@@ -61,15 +61,3 @@ The system supports:
 4. Intermediate results stored → Analyzed → Visualized
 5. Results formatted for React → Dispatched to UI or external system
 6. Metadata saved at every step
-
-## 🧱 Deployment Notes
-- Containerized using Docker (FastAPI backend, React frontend, MongoDB)
-- Secured using OAuth for frontend + backend APIs
-- Scalable orchestration using LangGraph DAG nodes
-
-## 🧰 Technologies Used
-- **LangChain, LangGraph**
-- **FastAPI, MongoDB**
-- **ReactJS + Component Registry**
-- **Tavily for Web Search**
-- **Docker / Azure Container Apps**

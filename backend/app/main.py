@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.utils.logging_utils import get_logger
+from app.routers import roles, chat
 
 # Get module-specific logger
 logger = get_logger(__name__)
@@ -55,6 +56,11 @@ async def log_requests(request: Request, call_next):
     logger.info(f"Response: {response.status_code} - Took {process_time:.2f}ms")
 
     return response
+
+
+# Include the routers
+app.include_router(roles.router)
+app.include_router(chat.router)
 
 
 @app.get("/")

@@ -4,7 +4,7 @@ export interface EnvConfig {
 }
 
 export interface Message {
-  role: string;  // "user" or "assistant"
+  role: string; // "user" or "assistant"
   content: string;
   timestamp?: string;
 }
@@ -15,19 +15,18 @@ export interface Conversation {
   metadata?: Record<string, any>;
 }
 
-export interface QueryRequest {
+// Renamed from QueryRequest to ChatRequest for clarity
+export interface ChatRequest {
   query: string;
-  userId?: string;
-  context?: Record<string, any>;
+  role?: string;
   conversationId?: string;
 }
 
-export interface QueryResponse {
+// Renamed from QueryResponse to ChatResponse for clarity
+export interface ChatResponse {
   query: string;
   result: any;
-  status: string;
   metadata?: Record<string, any>;
-  visualization?: Record<string, any>;
   conversation_id?: string;
 }
 

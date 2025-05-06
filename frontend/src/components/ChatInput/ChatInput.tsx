@@ -1,26 +1,20 @@
-import React, { useState } from 'react';
-import { 
-  TextField, 
-  Button, 
-  Paper, 
-  Typography, 
-  Box, 
-  CircularProgress 
-} from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import { Box, Button, CircularProgress, Paper, TextField, Typography } from '@mui/material';
+import React, { useState } from 'react';
 
-interface QueryInputProps {
-  onSubmit: (query: string) => Promise<void>;
+interface ChatInputProps {
+  onSubmit: (message: string) => Promise<void>;
   isLoading: boolean;
 }
 
-const QueryInput: React.FC<QueryInputProps> = ({ onSubmit, isLoading }) => {
-  const [query, setQuery] = useState('');
+const ChatInput: React.FC<ChatInputProps> = ({ onSubmit, isLoading }) => {
+  const [message, setMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim() && !isLoading) {
-      await onSubmit(query);
+    if (message.trim() && !isLoading) {
+      await onSubmit(message);
+      setMessage(''); // Clear input after submission
     }
   };
 
@@ -30,24 +24,22 @@ const QueryInput: React.FC<QueryInputProps> = ({ onSubmit, isLoading }) => {
         Ask a question about your data
       </Typography>
       <form onSubmit={handleSubmit}>
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
           <TextField
             fullWidth
             variant="outlined"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            value={message}
+            onChange={e => setMessage(e.target.value)}
             placeholder="e.g., What were our top-selling products last month?"
             disabled={isLoading}
             multiline
             rows={2}
           />
-          <Button 
-            type="submit" 
-            variant="contained" 
-            color="primary" 
-            disabled={isLoading || !query.trim()}
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isLoading || !message.trim()}
             endIcon={isLoading ? <CircularProgress size={20} /> : <SendIcon />}
-            sx={{ height: '56px' }}
           >
             {isLoading ? 'Processing...' : 'Submit'}
           </Button>
@@ -57,4 +49,4 @@ const QueryInput: React.FC<QueryInputProps> = ({ onSubmit, isLoading }) => {
   );
 };
 
-export default QueryInput;
+export default ChatInput;

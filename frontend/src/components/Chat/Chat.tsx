@@ -1,16 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Paper, 
-  Typography, 
-  Box, 
-  Divider,
-  List,
-  ListItem,
-  CircularProgress
-} from '@mui/material';
-import QueryInput from '../QueryInput';
-import { Message, Conversation } from '../../types';
+import { Box, CircularProgress, Divider, List, ListItem, Paper, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+
 import { queryService } from '../../services/query.service';
+import { useRole } from '../../state/RoleContext';
+import { Message } from '../../types';
+import ChatInput from '../ChatInput';
 
 interface ChatProps {
   conversationId?: string;
@@ -22,11 +16,14 @@ const Chat: React.FC<ChatProps> = ({ conversationId: initialConversationId }) =>
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState<string | undefined>(initialConversationId);
 
+  // Use the shared role context instead of local state
+  const { selectedRole } = useRole();
+
   // Load conversation if conversationId is provided
   useEffect(() => {
     const loadConversation = async () => {
       if (!conversationId) return;
-      
+
       try {
         setLoading(true);
         const conversation = await queryService.getConversation(conversationId);
@@ -42,64 +39,92 @@ const Chat: React.FC<ChatProps> = ({ conversationId: initialConversationId }) =>
     loadConversation();
   }, [conversationId]);
 
-  const handleSubmitQuery = async (query: string) => {
+  // Save conversation ID to localStorage when it changes
+  useEffect(() => {
+    if (conversationId) {
+      localStorage.setItem('currentConversationId', conversationId);
+    }
+  }, [conversationId]);
+
+  // Load conversation ID from localStorage on component mount
+  useEffect(() => {
+    if (!initialConversationId) {
+      const savedConversationId = localStorage.getItem('currentConversationId');
+      if (savedConversationId) {
+        setConversationId(savedConversationId);
+      }
+    }
+  }, [initialConversationId]);
+
+  const handleSubmitMessage = async (message: string) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Add user message immediately for better UX
       const userMessage: Message = {
         role: 'user',
-        content: query,
-        timestamp: new Date().toISOString()
+        content: message,
+        timestamp: new Date().toISOString(),
       };
-      
+
       setMessages(prevMessages => [...prevMessages, userMessage]);
-      
-      // Send query to backend
-      const response = await queryService.sendQuery({ 
-        query, 
-        conversationId 
-      });
-      
+
+      // Send message to backend with selected role and conversation ID
+      const response = await queryService.sendChat(message, selectedRole, conversationId);
+
       // Add assistant response
       const assistantMessage: Message = {
         role: 'assistant',
         content: response.result,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
-      
+
       setMessages(prevMessages => [...prevMessages, assistantMessage]);
-      
+
       // Save conversation ID if this is a new conversation
       if (response.conversation_id && !conversationId) {
         setConversationId(response.conversation_id);
       }
     } catch (err) {
-      console.error('Error submitting query:', err);
-      setError('Failed to process your query. Please try again.');
+      console.error('Error submitting message:', err);
+      setError('Failed to process your message. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Function to start a new conversation
+  const startNewConversation = () => {
+    setConversationId(undefined);
+    setMessages([]);
+    localStorage.removeItem('currentConversationId');
+  };
+
   return (
     <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Conversation {conversationId ? `#${conversationId.substring(0, 8)}...` : ''}
-      </Typography>
-      
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h6">
+          {conversationId
+            ? `Conversation #${conversationId.substring(0, 8)}...`
+            : 'New Conversation'}
+        </Typography>
+        {conversationId && (
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Typography
+              variant="body2"
+              color="primary"
+              sx={{ cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+              onClick={startNewConversation}
+            >
+              Start New Conversation
+            </Typography>
+          </Box>
+        )}
+      </Box>
+
       {/* Chat history */}
-      <Box 
-        sx={{ 
-          mb: 3, 
-          maxHeight: '400px', 
-          overflowY: 'auto',
-          p: 2,
-          backgroundColor: 'grey.50',
-          borderRadius: 1
-        }}
-      >
+      <Box sx={{ mb: 3, height: 400, overflow: 'auto', bgcolor: 'grey.50', borderRadius: 1, p: 2 }}>
         {loading && messages.length === 0 ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
             <CircularProgress size={24} />
@@ -111,12 +136,11 @@ const Chat: React.FC<ChatProps> = ({ conversationId: initialConversationId }) =>
         ) : (
           <List>
             {messages.map((message, index) => (
-              <ListItem 
+              <ListItem
                 key={index}
-                sx={{ 
+                sx={{
                   mb: 1,
-                  p: 1,
-                  backgroundColor: message.role === 'user' ? 'primary.light' : 'background.paper',
+                  bgcolor: message.role === 'user' ? 'primary.light' : 'background.paper',
                   borderRadius: 1,
                   maxWidth: '80%',
                   ml: message.role === 'user' ? 'auto' : 0,
@@ -126,6 +150,7 @@ const Chat: React.FC<ChatProps> = ({ conversationId: initialConversationId }) =>
                 <Box>
                   <Typography variant="caption" color="text.secondary">
                     {message.role === 'user' ? 'You' : 'AI Assistant'}
+                    {message.role === 'assistant' && selectedRole && ` (as ${selectedRole})`}
                   </Typography>
                   <Typography>{message.content}</Typography>
                 </Box>
@@ -134,12 +159,12 @@ const Chat: React.FC<ChatProps> = ({ conversationId: initialConversationId }) =>
           </List>
         )}
       </Box>
-      
+
       <Divider sx={{ my: 2 }} />
-      
-      {/* Query input */}
-      <QueryInput onSubmit={handleSubmitQuery} isLoading={loading} />
-      
+
+      {/* Chat input */}
+      <ChatInput onSubmit={handleSubmitMessage} isLoading={loading} />
+
       {error && (
         <Typography color="error" sx={{ mt: 2 }}>
           {error}
